@@ -2,6 +2,9 @@ import {useRef, useState} from 'react'
 import Input from './components/InputBox/Input'
 import {mmToPx, inToPx} from './utilities/numberConverter'
 import "tailwindcss/tailwind.css"
+import portraitBoxDraw from './utilities/portraitBoxDraw'
+import landscapeBoxDraw from './utilities/landscapeBoxDraw'
+import resetCanvas from './utilities/resetCanvas'
 
 function App() {
   const canvasRef = useRef(null)
@@ -28,115 +31,22 @@ function App() {
       setBoxLength(e.target.value)
     }
   }
-  const handleCanvas = () => {
-    const myCanvas = canvasRef.current
-    const c = myCanvas.getContext("2d")
+    let BoxWidthPx = mmToPx(boxWidth)
+    let BoxHeightPx = mmToPx(boxHeight)
+    let boxLenghtPx = mmToPx(boxLength)
+    const [boxHeightPx, boxWidthPx] = [BoxHeightPx, BoxWidthPx]
+  const drawPortrait = () => {
     let x = 50;
     let y = 50 + mmToPx(boxLength) + boxPesting;
-
-    let boxWidthPx = mmToPx(boxWidth)
-    let boxHeightPx = mmToPx(boxHeight)
-    let boxLenghtPx = mmToPx(boxLength)
-
-    // Festing
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x +  inToPx(0.1), y, inToPx(0.4), boxHeightPx)
-    c.stroke();
-    c.closePath()
-
-    x +=boxPesting
-
-    // Top Lock
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, y - boxLenghtPx, boxWidthPx, boxLenghtPx)
-    c.stroke();
-    c.closePath()
-
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, y - ((boxLenghtPx) + (boxPesting)), boxWidthPx,  boxPesting)
-    c.stroke();
-    c.closePath()
-
-    // Body 01
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, y, boxWidthPx, boxHeightPx)
-    c.stroke();
-    c.closePath()
-    
-
-    x += boxWidthPx
-
-    // Top Lock 2
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, (y - 50)/2 + 50, boxLenghtPx,  (y - 50)/2)
-    c.stroke();
-    c.closePath()
-
-    // Body 02
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, y, boxLenghtPx, boxHeightPx)
-    c.stroke();
-    c.closePath()
-
-    // Bottom Lock 1
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, ((y + 50)+boxHeightPx)-50, boxLenghtPx,  (y - 50)/2)
-    c.stroke();
-    c.closePath()
-
-    x+=boxLenghtPx
-
-    // Body 03
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, y, boxWidthPx, boxHeightPx)
-    c.stroke();
-    c.closePath()
-
-    // Bottom Lock 3
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, y + boxHeightPx, boxWidthPx, boxLenghtPx)
-    c.stroke();
-    c.closePath()
-
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, y + boxHeightPx + boxLenghtPx, boxWidthPx, boxPesting)
-    c.stroke();
-    c.closePath()
-
-    x+=boxWidthPx
-
-    // Top Lock 3
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, (y - 50)/2 + 50, boxLenghtPx,  (y - 50)/2)
-    c.stroke();
-    c.closePath()
-
-    // Body 04
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, y, boxLenghtPx, boxHeightPx)
-    c.stroke();
-    c.closePath()
-
-    // Bottom Lock 1
-    c.beginPath()
-    c.fillStyle = "Black";
-    c.rect(x, ((y + 50)+boxHeightPx)-50, boxLenghtPx,  (y - 50)/2)
-    c.stroke();
-    c.closePath()
-
-    
+    portraitBoxDraw(canvasRef, x, y, boxWidthPx, boxHeightPx, boxLenghtPx, boxPesting)        
+  }
+  const drawLandscape = () => {
+    let x = 50  + mmToPx(boxLength) + boxPesting;
+    let y = 50;
+    landscapeBoxDraw(canvasRef, x, y, boxWidthPx, boxHeightPx, boxLenghtPx, boxPesting)
+  }
+  const handleResetCanvas = () => {
+    resetCanvas(canvasRef)
   }
 
   return (
@@ -153,7 +63,9 @@ function App() {
         <Input label="Enter Box Height in mm" type="text" name="boxHeight" palceHolder="Enter Box Height" value={boxHeight} changeHandler={handleChange} />
         <Input label="Enter Box Lenght in mm" type="text" name="boxLength" palceHolder="Enter Box Lenght" value={boxLength} changeHandler={handleChange} />
       </form>
-      <button onClick={handleCanvas}>Genarate Canvas</button>
+      <button onClick={drawLandscape}>Draw Landscape</button>
+      <button onClick={drawPortrait}>Draw Portrait</button>
+      <button onClick={handleResetCanvas}>Reset</button>
     </div>
   );
 }
